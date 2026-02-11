@@ -1,0 +1,17 @@
+[
+  {
+    "id": "42c5730f-03c1-4709-8c09-f3ce29801296",
+    "title": "Doctor Visit",
+    "description": "Doctor Visit",
+    "assigneeId": "0bd97259-f4cf-4451-bce9-9c02a3fc965d",
+    "date": "2026-02-11",
+    "startTime": "14:01",
+    "endTime": "15:04",
+    "allDay": false,
+    "recurrence": null,
+    "recurrenceEndDate": null,
+    "createdBy": "0bd97259-f4cf-4451-bce9-9c02a3fc965d",
+    "createdAt": "2026-02-11T16:04:28.976Z",
+    "updatedAt": "2026-02-11T16:04:28.976Z"
+  }
+]

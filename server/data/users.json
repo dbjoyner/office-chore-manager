@@ -1,0 +1,11 @@
+[
+  {
+    "id": "0bd97259-f4cf-4451-bce9-9c02a3fc965d",
+    "email": "davidbjoyner@gmail.com",
+    "displayName": "David Joyner",
+    "passwordHash": "$2a$10$APct8YqsZyhv6qoXBT5VTu8NQL7shXY3RfEiRxhBDSrDQV7iZ2ux.",
+    "role": "admin",
+    "color": "#0078D4",
+    "createdAt": "2026-02-11T16:02:45.010Z"
+  }
+]

@@ -1,0 +1,121 @@
+/* Outlook-inspired calendar theme */
+@import 'react-big-calendar/lib/css/react-big-calendar.css';
+@import 'react-big-calendar/lib/addons/dragAndDrop/styles.css';
+
+.rbc-calendar {
+  font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+  min-height: calc(100vh - 140px);
+}
+
+/* Header row */
+.rbc-header {
+  padding: 8px 4px;
+  font-weight: 600;
+  font-size: 13px;
+  color: #333;
+  border-bottom: 2px solid #0078D4;
+  background: #f8f9fa;
+}
+
+/* Today highlight */
+.rbc-today {
+  background-color: #E6F2FB !important;
+}
+
+/* Selected date range */
+.rbc-slot-selection {
+  background-color: rgba(0, 120, 212, 0.15);
+}
+
+/* Events */
+.rbc-event {
+  border: none !important;
+  border-radius: 3px !important;
+  padding: 2px 6px !important;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.rbc-event.rbc-selected {
+  box-shadow: 0 0 0 2px #0078D4;
+}
+
+/* Month view events */
+.rbc-row-segment .rbc-event-content {
+  font-size: 12px;
+}
+
+/* Toolbar buttons */
+.rbc-toolbar button {
+  color: #333;
+  border: 1px solid #d0d0d0;
+  border-radius: 2px;
+  padding: 6px 16px;
+  font-size: 13px;
+}
+
+.rbc-toolbar button:hover {
+  background-color: #E6F2FB;
+  color: #0078D4;
+}
+
+.rbc-toolbar button.rbc-active {
+  background-color: #0078D4;
+  color: white;
+  border-color: #0078D4;
+}
+
+.rbc-toolbar button.rbc-active:hover {
+  background-color: #106EBE;
+}
+
+/* Agenda view */
+.rbc-agenda-view table.rbc-agenda-table thead > tr > th {
+  border-bottom: 2px solid #0078D4;
+  font-weight: 600;
+}
+
+/* Day/Week time grid */
+.rbc-time-header-content {
+  border-left: 1px solid #e0e0e0;
+}
+
+.rbc-timeslot-group {
+  min-height: 50px;
+}
+
+.rbc-current-time-indicator {
+  background-color: #E74856;
+  height: 2px;
+}
+
+/* DnD styles */
+.rbc-addons-dnd .rbc-addons-dnd-resize-ns-icon,
+.rbc-addons-dnd .rbc-addons-dnd-resize-ew-icon {
+  display: none;
+}
+
+.rbc-addons-dnd-dragged-event {
+  opacity: 0.5;
+}
+
+/* All-day row */
+.rbc-allday-cell {
+  min-height: 30px;
+}
+
+/* Month view date number */
+.rbc-date-cell {
+  padding: 4px 8px;
+  font-size: 13px;
+}
+
+.rbc-off-range-bg {
+  background: #f5f5f5;
+}
+
+/* Resource view header */
+.rbc-row-resource {
+  font-weight: 600;
+  color: #0078D4;
+}
