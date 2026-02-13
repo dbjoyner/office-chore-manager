@@ -1,8 +1,8 @@
-import { Box, Button, ButtonGroup, IconButton, Typography, ToggleButton, ToggleButtonGroup } from '@mui/material';
+import { Box, Button, IconButton, Typography, ToggleButton, ToggleButtonGroup, FormControlLabel, Switch } from '@mui/material';
 import { ChevronLeft, ChevronRight, Today } from '@mui/icons-material';
 import { format } from 'date-fns';
 
-export default function CalendarToolbar({ date, view, onNavigate, onView, views }) {
+export default function CalendarToolbar({ date, view, onNavigate, onView, views, hideCompleted, onToggleHideCompleted }) {
   const label = view === 'month'
     ? format(date, 'MMMM yyyy')
     : view === 'week'
@@ -31,26 +31,39 @@ export default function CalendarToolbar({ date, view, onNavigate, onView, views 
           {label}
         </Typography>
       </Box>
-      <ToggleButtonGroup
-        value={view}
-        exclusive
-        onChange={(_, v) => v && onView(v)}
-        size="small"
-      >
-        {views.map((v) => (
-          <ToggleButton
-            key={v}
-            value={v}
-            sx={{
-              textTransform: 'capitalize',
-              '&.Mui-selected': { bgcolor: '#0078D4', color: '#fff' },
-              '&.Mui-selected:hover': { bgcolor: '#106EBE' },
-            }}
-          >
-            {v}
-          </ToggleButton>
-        ))}
-      </ToggleButtonGroup>
+      <Box display="flex" alignItems="center" gap={2}>
+        <FormControlLabel
+          control={
+            <Switch
+              size="small"
+              checked={hideCompleted}
+              onChange={onToggleHideCompleted}
+            />
+          }
+          label="Hide completed"
+          sx={{ mr: 0, '& .MuiTypography-root': { fontSize: 14 } }}
+        />
+        <ToggleButtonGroup
+          value={view}
+          exclusive
+          onChange={(_, v) => v && onView(v)}
+          size="small"
+        >
+          {views.map((v) => (
+            <ToggleButton
+              key={v}
+              value={v}
+              sx={{
+                textTransform: 'capitalize',
+                '&.Mui-selected': { bgcolor: '#0078D4', color: '#fff' },
+                '&.Mui-selected:hover': { bgcolor: '#106EBE' },
+              }}
+            >
+              {v}
+            </ToggleButton>
+          ))}
+        </ToggleButtonGroup>
+      </Box>
     </Box>
   );
 }

@@ -50,5 +50,11 @@ export default function useChores() {
     return res.data;
   }, []);
 
-  return { chores, loading, error, fetchChores, createChore, updateChore, deleteChore, moveChore, assignChore };
+  const completeChore = useCallback(async (id) => {
+    const res = await api.patch(`/chores/${id}/complete`);
+    setChores((prev) => prev.map((c) => (c.id === id ? res.data : c)));
+    return res.data;
+  }, []);
+
+  return { chores, loading, error, fetchChores, createChore, updateChore, deleteChore, moveChore, assignChore, completeChore };
 }

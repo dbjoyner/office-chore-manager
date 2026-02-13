@@ -17,7 +17,7 @@ const localizer = dateFnsLocalizer({ format, parse, startOfWeek, getDay, locales
 const DnDCalendar = withDragAndDrop(Calendar);
 
 export default function CalendarView() {
-  const { chores, fetchChores, moveChore, assignChore, createChore, updateChore, deleteChore } = useChores();
+  const { chores, fetchChores, moveChore, assignChore, createChore, updateChore, deleteChore, completeChore } = useChores();
   const { members } = useTeam();
   const [currentDate, setCurrentDate] = useState(new Date());
   const [view, setView] = useState('month');
@@ -25,6 +25,7 @@ export default function CalendarView() {
   const [selectedChore, setSelectedChore] = useState(null);
   const [selectedSlot, setSelectedSlot] = useState(null);
   const [toast, setToast] = useState({ open: false, message: '', severity: 'success' });
+  const [hideCompleted, setHideCompleted] = useState(false);
 
   // Fetch chores for visible range
   const loadChores = useCallback((date) => {
@@ -42,7 +43,9 @@ export default function CalendarView() {
     const memberMap = {};
     members.forEach((m) => { memberMap[m.id] = m; });
 
-    return chores.map((chore) => {
+    const filtered = hideCompleted ? chores.filter((c) => !c.completed) : chores;
+
+    return filtered.map((chore) => {
       const assignee = memberMap[chore.assigneeId];
       const dateStr = chore.date;
       let start, end;
@@ -68,17 +71,18 @@ export default function CalendarView() {
         },
       };
     });
-  }, [chores, members]);
+  }, [chores, members, hideCompleted]);
 
   // Event style based on assignee color
   const eventPropGetter = useCallback((event) => {
     const color = event.resource?.assigneeColor || '#0078D4';
+    const isCompleted = !!event.resource?.completed;
     return {
       style: {
         backgroundColor: color,
         color: '#fff',
         borderLeft: `3px solid ${color}`,
-        opacity: event.resource?.recurrence ? 0.9 : 1,
+        opacity: isCompleted ? 0.5 : (event.resource?.recurrence ? 0.9 : 1),
       },
     };
   }, []);
@@ -139,6 +143,19 @@ export default function CalendarView() {
     }
   }, [deleteChore, loadChores, currentDate]);
 
+  // Complete handler
+  const handleComplete = useCallback(async (id) => {
+    try {
+      const updated = await completeChore(id);
+      const msg = updated.completed ? 'Chore marked complete' : 'Chore marked incomplete';
+      setToast({ open: true, message: msg, severity: 'success' });
+      setModalOpen(false);
+      loadChores(currentDate);
+    } catch {
+      setToast({ open: true, message: 'Failed to update completion', severity: 'error' });
+    }
+  }, [completeChore, loadChores, currentDate]);
+
   const handleNavigate = useCallback((newDate) => {
     setCurrentDate(newDate);
   }, []);
@@ -161,7 +178,13 @@ export default function CalendarView() {
         popup
         eventPropGetter={eventPropGetter}
         components={{
-          toolbar: (props) => <CalendarToolbar {...props} />,
+          toolbar: (props) => (
+            <CalendarToolbar
+              {...props}
+              hideCompleted={hideCompleted}
+              onToggleHideCompleted={() => setHideCompleted((h) => !h)}
+            />
+          ),
           event: ChoreEvent,
         }}
         style={{ height: 'calc(100vh - 140px)' }}
@@ -190,6 +213,7 @@ export default function CalendarView() {
         onClose={() => setModalOpen(false)}
         onSave={handleSave}
         onDelete={handleDelete}
+        onComplete={handleComplete}
         chore={selectedChore}
         initialDate={selectedSlot?.date}
         members={members}

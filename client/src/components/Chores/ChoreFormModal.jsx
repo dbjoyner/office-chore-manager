@@ -4,10 +4,10 @@ import {
   TextField, Button, FormControl, InputLabel, Select, MenuItem,
   FormControlLabel, Switch, Box, IconButton,
 } from '@mui/material';
-import { Delete } from '@mui/icons-material';
+import { Delete, CheckCircle, Undo } from '@mui/icons-material';
 import RecurrenceSelect from './RecurrenceSelect';
 
-export default function ChoreFormModal({ open, onClose, onSave, onDelete, chore, initialDate, members }) {
+export default function ChoreFormModal({ open, onClose, onSave, onDelete, onComplete, chore, initialDate, members }) {
   const [form, setForm] = useState({
     title: '',
     description: '',
@@ -65,6 +65,7 @@ export default function ChoreFormModal({ open, onClose, onSave, onDelete, chore,
 
   const isEditing = !!chore;
   const choreId = chore?.parentId || chore?.id;
+  const isCompleted = !!chore?.completed;
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
@@ -160,16 +161,30 @@ export default function ChoreFormModal({ open, onClose, onSave, onDelete, chore,
           )}
         </Box>
       </DialogContent>
-      <DialogActions sx={{ px: 3, pb: 2 }}>
-        <Button onClick={onClose}>Cancel</Button>
-        <Button
-          variant="contained"
-          onClick={handleSubmit}
-          disabled={!form.title || !form.date}
-          sx={{ bgcolor: '#0078D4', '&:hover': { bgcolor: '#106EBE' } }}
-        >
-          {isEditing ? 'Update' : 'Create'}
-        </Button>
+      <DialogActions sx={{ px: 3, pb: 2, justifyContent: 'space-between' }}>
+        <Box>
+          {isEditing && (
+            <Button
+              variant="outlined"
+              startIcon={isCompleted ? <Undo /> : <CheckCircle />}
+              onClick={() => onComplete(choreId)}
+              color={isCompleted ? 'warning' : 'success'}
+            >
+              {isCompleted ? 'Mark Incomplete' : 'Mark Complete'}
+            </Button>
+          )}
+        </Box>
+        <Box display="flex" gap={1}>
+          <Button onClick={onClose}>Cancel</Button>
+          <Button
+            variant="contained"
+            onClick={handleSubmit}
+            disabled={!form.title || !form.date}
+            sx={{ bgcolor: '#0078D4', '&:hover': { bgcolor: '#106EBE' } }}
+          >
+            {isEditing ? 'Update' : 'Create'}
+          </Button>
+        </Box>
       </DialogActions>
     </Dialog>
   );

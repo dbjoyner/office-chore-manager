@@ -96,4 +96,25 @@ router.patch('/:id/assign', auth, async (req, res) => {
   }
 });
 
+router.patch('/:id/complete', auth, async (req, res) => {
+  try {
+    const chore = await choreService.completeChore(req.params.id, req.user.id);
+    if (!chore) return res.status(404).json({ error: 'Chore not found' });
+
+    // Notify the creator if a different user completed it
+    if (chore.completed && chore.createdBy && chore.createdBy !== req.user.id) {
+      await notificationService.createNotification({
+        userId: chore.createdBy,
+        type: 'completed',
+        choreId: chore.id,
+        message: `The chore "${chore.title}" has been completed`,
+      });
+    }
+
+    res.json(chore);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 module.exports = router;
