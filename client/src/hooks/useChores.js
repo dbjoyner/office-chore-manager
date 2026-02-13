@@ -1,12 +1,16 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import api from '../api/axiosInstance';
+import { useSocket } from '../socket/SocketContext';
 
 export default function useChores() {
   const [chores, setChores] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const dateRangeRef = useRef({ from: null, to: null });
+  const { socket } = useSocket();
 
   const fetchChores = useCallback(async (from, to) => {
+    dateRangeRef.current = { from, to };
     setLoading(true);
     setError(null);
     try {
@@ -20,6 +24,20 @@ export default function useChores() {
       setLoading(false);
     }
   }, []);
+
+  useEffect(() => {
+    if (!socket) return;
+
+    const handler = () => {
+      const { from, to } = dateRangeRef.current;
+      if (from && to) {
+        fetchChores(from, to);
+      }
+    };
+
+    socket.on('chore:changed', handler);
+    return () => socket.off('chore:changed', handler);
+  }, [socket, fetchChores]);
 
   const createChore = useCallback(async (data) => {
     const res = await api.post('/chores', data);

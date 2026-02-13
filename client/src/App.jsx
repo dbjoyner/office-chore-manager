@@ -2,6 +2,7 @@ import { Component } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { CssBaseline, ThemeProvider, createTheme, Box, Typography } from '@mui/material';
 import { AuthProvider } from './auth/AuthContext';
+import { SocketProvider } from './socket/SocketContext';
 import ProtectedRoute from './auth/ProtectedRoute';
 import LoginPage from './auth/LoginPage';
 import SignupPage from './auth/SignupPage';
@@ -51,6 +52,7 @@ export default function App() {
       <ErrorBoundary>
         <BrowserRouter>
           <AuthProvider>
+          <SocketProvider>
             <Routes>
               <Route path="/login" element={<LoginPage />} />
               <Route path="/signup" element={<SignupPage />} />
@@ -76,6 +78,7 @@ export default function App() {
               />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
+          </SocketProvider>
           </AuthProvider>
         </BrowserRouter>
       </ErrorBoundary>

@@ -3,6 +3,7 @@ const router = express.Router();
 const auth = require('../middleware/auth');
 const choreService = require('../services/choreService');
 const notificationService = require('../services/notificationService');
+const { broadcastChoreEvent } = require('../socket');
 
 router.get('/', auth, async (req, res) => {
   try {
@@ -36,6 +37,7 @@ router.post('/', auth, async (req, res) => {
     }
 
     res.status(201).json(chore);
+    broadcastChoreEvent('chore:changed', { action: 'created', chore });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -46,6 +48,7 @@ router.put('/:id', auth, async (req, res) => {
     const chore = await choreService.updateChore(req.params.id, req.body);
     if (!chore) return res.status(404).json({ error: 'Chore not found' });
     res.json(chore);
+    broadcastChoreEvent('chore:changed', { action: 'updated', chore });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -56,6 +59,7 @@ router.delete('/:id', auth, async (req, res) => {
     const removed = await choreService.deleteChore(req.params.id);
     if (!removed) return res.status(404).json({ error: 'Chore not found' });
     res.json({ message: 'Chore deleted' });
+    broadcastChoreEvent('chore:changed', { action: 'deleted', id: req.params.id });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -68,6 +72,7 @@ router.patch('/:id/move', auth, async (req, res) => {
     const chore = await choreService.moveChore(req.params.id, date);
     if (!chore) return res.status(404).json({ error: 'Chore not found' });
     res.json(chore);
+    broadcastChoreEvent('chore:changed', { action: 'moved', chore });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -91,6 +96,7 @@ router.patch('/:id/assign', auth, async (req, res) => {
     }
 
     res.json(chore);
+    broadcastChoreEvent('chore:changed', { action: 'assigned', chore });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -112,6 +118,7 @@ router.patch('/:id/complete', auth, async (req, res) => {
     }
 
     res.json(chore);
+    broadcastChoreEvent('chore:changed', { action: 'completed', chore });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

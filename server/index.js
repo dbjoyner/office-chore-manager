@@ -1,8 +1,11 @@
+const http = require('http');
 const express = require('express');
 const cors = require('cors');
 const { PORT } = require('./config');
+const { initializeSocket } = require('./socket');
 
 const app = express();
+const server = http.createServer(app);
 
 app.use(cors());
 app.use(express.json());
@@ -16,6 +19,8 @@ app.use('/api/notifications', require('./routes/notificationRoutes'));
 // Health check
 app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
 
-app.listen(PORT, () => {
+initializeSocket(server);
+
+server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
